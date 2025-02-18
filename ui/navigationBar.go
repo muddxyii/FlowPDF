@@ -32,5 +32,5 @@ func BuildNavBar(switchPage func(newContent fyne.CanvasObject)) *fyne.Container 
 		container.NewPadded(editDropdownButton),
 	)
 
-	return container.NewVBox(widget.NewSeparator(), buttons)
+	return container.NewHBox(buttons, widget.NewSeparator())
 }
