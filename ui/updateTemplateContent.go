@@ -3,32 +3,35 @@ package ui
 import (
 	"FlowPDF/scripts"
 	"FlowPDF/ui/components"
+	"embed"
 	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 	"github.com/pkg/browser"
-	"os"
 	"path/filepath"
 	"strings"
 )
 
+//go:embed assets/templates/*.pdf
+var embeddedTemplates embed.FS
+
 func getTemplateFiles() ([]string, error) {
 	var templates []string
-	templatesDir := "assets/templates"
-	err := filepath.Walk(templatesDir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if !info.IsDir() && strings.HasSuffix(info.Name(), ".pdf") {
-			templates = append(templates, info.Name())
-		}
-		return nil
-	})
+
+	entries, err := embeddedTemplates.ReadDir("assets/templates")
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to read embedded templates: %w", err)
 	}
+
+	// Add files with .pdf extension
+	for _, entry := range entries {
+		if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".pdf") {
+			templates = append(templates, entry.Name())
+		}
+	}
+
 	return templates, nil
 }
 

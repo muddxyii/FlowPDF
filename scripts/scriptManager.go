@@ -2,10 +2,14 @@ package scripts
 
 import (
 	"bytes"
+	"embed"
 	"encoding/json"
 	"fmt"
 	"os/exec"
 )
+
+//go:embed *.js
+var embeddedScripts embed.FS
 
 // ScriptType represents an enumerated type for defining different script action types for PDF operations.
 type ScriptType int
@@ -60,6 +64,16 @@ func RunScript(scriptType ScriptType, options *ScriptOptions, pdfURI string, pdf
 		templateArg = *pdfTemplate
 	}
 
-	cmd := exec.Command("node", "scripts/pdf_scripts.js", action, pdfURI, templateArg, optionsJSON)
+	scriptData, err := embeddedScripts.ReadFile("pdf_scripts.js")
+	if err != nil {
+		return fmt.Errorf("failed to read embedded script: %v", err)
+	}
+
+	// Create the command to run node and pass the script via stdin
+	cmd := exec.Command("node", "-")
+	cmd.Stdin = bytes.NewReader(scriptData) // Pass the script content via stdin
+	cmd.Args = append(cmd.Args, action, pdfURI, templateArg, optionsJSON)
+
+	// Run the command
 	return cmd.Run()
 }
