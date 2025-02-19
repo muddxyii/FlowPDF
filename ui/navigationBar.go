@@ -8,14 +8,14 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func BuildNavBar(switchPage func(newContent fyne.CanvasObject)) *fyne.Container {
+func BuildNavBar(switchPage func(newContent fyne.CanvasObject), win fyne.Window) *fyne.Container {
 	// Home Button
 	homeButton := widget.NewButtonWithIcon("Home", theme.HomeIcon(), func() {
 		switchPage(MainContentPage())
 	})
 	// Clear Button
 	clearButton := widget.NewButtonWithIcon("Clear PDF", theme.ContentClearIcon(), func() {
-		switchPage(ClearPdfContentPage())
+		switchPage(ClearPdfContentPage(win))
 	})
 	// Update Format Button
 	updateFormatButton := widget.NewButtonWithIcon("Update Template", theme.DocumentIcon(), func() {

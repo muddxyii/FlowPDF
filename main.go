@@ -21,7 +21,7 @@ func main() {
 	}
 
 	// Build UI components
-	navigationBar := ui.BuildNavBar(switchPage)
+	navigationBar := ui.BuildNavBar(switchPage, window)
 	footer := ui.BuildFooterContent()
 	switchPage(ui.MainContentPage())
 
