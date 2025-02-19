@@ -17,6 +17,20 @@ function getInfoFieldNames() {
         ['BFType', 'Manufacturer', 'SOVList'];
 }
 
+function getRepairsFieldNames() {
+    return ['RepairedTester', 'RepairedTesterNo', 'DateRepaired', 'RepairedTestKitSerial'] +
+        // Check Valve
+        ['Ck1Cleaned', 'Ck1CheckDisc', 'Ck1DiscHolder',
+            'Ck1Spring', 'Ck1Guide', 'Ck1Seat', 'Ck1Other', 'Ck2Cleaned', 'Ck2CheckDisc', 'Ck2DiscHolder',
+            'Ck2Spring', 'Ck2Guide', 'Ck2Seat', 'Ck2Other',] +
+        // Relief Valve
+        ['RVCleaned', 'RVRubberKit', 'RVDiscHolder',
+            'RVSpring', 'RVGuide', 'RVSeat', 'RVOther',] +
+        // Vacuum Breaker
+        ['PVBCleaned', 'PVBRubberKit', 'PVBDiscHolder',
+            'PVBSpring', 'PVBGuide', 'PVBSeat', 'PVBOther'];
+}
+
 function parseOptions(optionsString) {
     try {
         return JSON.parse(optionsString);
@@ -32,10 +46,14 @@ async function clearPDF(pdfPath, options) {
 
     const form = pdfDoc.getForm();
     const infoFieldsNames = getInfoFieldNames();
+    const repairsFieldsNames = getRepairsFieldNames();
 
     const fields = form.getFields();
     fields.forEach(field => {
         if (options.KeepInfo && infoFieldsNames.includes(field.getName())) {
+            return;
+        }
+        if (options.KeepRepairData && repairsFieldsNames.includes(field.getName())) {
             return;
         }
 
