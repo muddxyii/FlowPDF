@@ -27,6 +27,24 @@ Air will automatically watch for code changes and restart the application.
 
 ---
 
+## Packaging the Application
+
+### For macOS:
+```bash
+fyne package -os darwin
+```
+
+### For Windows (from M Series Mac)
+```bash
+GOARCH=amd64 CC=x86_64-w64-mingw32-gcc fyne package -os windows
+```
+Note: Note: For Windows packaging, ensure mingw-w64 is installed via Homebrew:
+```bash
+brew install mingw-w64
+```
+
+---
+
 ## Additional Notes
 
 - Make sure your `GOPATH` is correctly set up.
@@ -34,4 +52,3 @@ Air will automatically watch for code changes and restart the application.
 
 For more details about `air`, refer to the [official GitHub repository](https://github.com/cosmtrek/air).
 
----
