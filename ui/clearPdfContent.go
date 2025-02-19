@@ -44,7 +44,7 @@ func ClearPdfContentPage(win fyne.Window) fyne.CanvasObject {
 			return
 		}
 
-		err := scripts.RunScript(scripts.PdfClear, pdfURI)
+		err := scripts.RunScript(scripts.PdfClear, pdfURI, nil)
 		if err != nil {
 			dialog.ShowError(fmt.Errorf("failed to clear forms: %v", err), win)
 			return

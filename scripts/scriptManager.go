@@ -2,9 +2,11 @@ package scripts
 
 import (
 	"bytes"
+	"fmt"
 	"os/exec"
 )
 
+// ScriptType represents an enumerated type for defining different script action types for PDF operations.
 type ScriptType int
 
 const (
@@ -20,15 +22,25 @@ func IsNodeInstalled() bool {
 	return err == nil
 }
 
-func RunScript(scriptType ScriptType, pdfURI string) error {
+// RunScript executes a Node.js script for PDF operations such as clearing or merging PDFs based on the specified script type.
+// The function takes a ScriptType, the URI of the PDF file, and an optional pointer to a PDF template string.
+// It returns an error if the script type is invalid or if the command execution fails.
+func RunScript(scriptType ScriptType, pdfURI string, pdfTemplate *string) error {
+	action := ""
 	switch scriptType {
 	case PdfClear:
-		cmd := exec.Command("node", "scripts/pdf_clear.js", pdfURI)
-		return cmd.Run()
+		action = "clearPDF"
 	case PdfMerge:
-		break
+		action = "mergePDF"
 	default:
-		break
+		return fmt.Errorf("invalid script type")
 	}
-	return nil
+
+	templateArg := ""
+	if pdfTemplate != nil {
+		templateArg = *pdfTemplate
+	}
+
+	cmd := exec.Command("node", "scripts/pdf_scripts.js", action, pdfURI, templateArg)
+	return cmd.Run()
 }
