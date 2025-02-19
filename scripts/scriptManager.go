@@ -2,6 +2,7 @@ package scripts
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"os/exec"
 )
@@ -43,11 +44,21 @@ func RunScript(scriptType ScriptType, options *ScriptOptions, pdfURI string, pdf
 		return fmt.Errorf("invalid script type")
 	}
 
+	// Serialize ScriptOptions to JSON
+	optionsJSON := "{}"
+	if options != nil {
+		optionsBytes, err := json.Marshal(options)
+		if err != nil {
+			return fmt.Errorf("failed to serialize ScriptOptions: %v", err)
+		}
+		optionsJSON = string(optionsBytes) // Serialize as string
+	}
+
 	templateArg := ""
 	if pdfTemplate != nil {
 		templateArg = *pdfTemplate
 	}
 
-	cmd := exec.Command("node", "scripts/pdf_scripts.js", action, pdfURI, templateArg)
+	cmd := exec.Command("node", "scripts/pdf_scripts.js", action, pdfURI, templateArg, optionsJSON)
 	return cmd.Run()
 }
