@@ -6,8 +6,21 @@ async function clearPDF(pdfPath) {
     const pdfDoc = await PDFDocument.load(pdfBytes);
 
     const form = pdfDoc.getForm();
-    const serialNoField = form.getTextField('SerialNo');
-    serialNoField.setText('');
+
+    const fields = form.getFields();
+    fields.forEach(field => {
+        const fieldType = field.constructor.name;
+
+        if (fieldType === 'PDFTextField') {
+            field.setText('');
+        } else if (fieldType === 'PDFCheckBox') {
+            field.uncheck();
+        } else if (fieldType === 'PDFRadioGroup') {
+            field.clear();
+        } else if (fieldType === 'PDFDropdown' || fieldType === 'PDFOptionList') {
+            field.clear();
+        }
+    });
 
     const clearedPdf = await pdfDoc.save();
     await fs.promises.writeFile(pdfPath, clearedPdf);
