@@ -1,4 +1,5 @@
 const { PDFDocument } = require('pdf-lib');
+const path = require('path');
 const fs = require('fs');
 
 function getInfoFieldNames() {
@@ -65,6 +66,7 @@ async function clearPDF(pdfPath, options) {
     const repairsFieldsNames = getRepairsFieldNames();
     const finalFieldsNames = getFinalFieldNames();
 
+    const serialNoField = form.getTextField('SerialNo').getText();
     const fields = form.getFields();
     fields.forEach(field => {
         if (options.KeepInfo && infoFieldsNames.includes(field.getName())) {
@@ -96,7 +98,9 @@ async function clearPDF(pdfPath, options) {
     });
 
     const clearedPdf = await pdfDoc.save();
-    await fs.promises.writeFile(pdfPath, clearedPdf);
+    const pdfDir = path.dirname(pdfPath);
+    const newPdfPath = path.join(pdfDir, serialNoField + '_cleared.pdf');
+    await fs.promises.writeFile(newPdfPath, clearedPdf);
 }
 
 async function mergePDF(pdfPath) {
