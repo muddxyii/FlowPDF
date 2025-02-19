@@ -103,10 +103,53 @@ async function clearPDF(pdfPath, options) {
     await fs.promises.writeFile(newPdfPath, clearedPdf);
 }
 
-async function mergePDF(pdfPath) {
-    console.log(`Merging PDFs for: ${pdfPath}`);
-    // Logic to merge PDFs
+async function mergePDF(pdfPath, templatePath) {
+    // Load the original PDF
+    const originalPdfBytes = await fs.promises.readFile(pdfPath);
+    const originalPdfDoc = await PDFDocument.load(originalPdfBytes);
+    const originalForm = originalPdfDoc.getForm();
+
+    // Load the template PDF
+    const templatePdfBytes = await fs.promises.readFile(templatePath);
+    const templatePdfDoc = await PDFDocument.load(templatePdfBytes);
+    const templateForm = templatePdfDoc.getForm();
+
+    const serialNoField = originalForm.getTextField('SerialNo').getText();
+    const originalFields = originalForm.getFields();
+    originalFields.forEach((originalField) => {
+        const fieldName = originalField.getName();
+        const fieldType = originalField.constructor.name;
+
+        const templateField = templateForm.getFieldMaybe(fieldName);
+        if (templateField) {
+            if (fieldType === 'PDFTextField') {
+                templateField.setText(originalField.getText() || '');
+            } else if (fieldType === 'PDFCheckBox') {
+                if (originalField.isChecked()) {
+                    templateField.check();
+                } else {
+                    templateField.uncheck();
+                }
+            } else if (fieldType === 'PDFRadioGroup') {
+                const selected = originalField.getSelected();
+                if (selected) {
+                    templateField.select(selected);
+                }
+            } else if (fieldType === 'PDFDropdown' || fieldType === 'PDFOptionList') {
+                const selectedValue = originalField.getSelected();
+                if (selectedValue) {
+                    templateField.select(selectedValue);
+                }
+            }
+        }
+    });
+
+    const mergedPdfBytes = await templatePdfDoc.save();
+    const outputDir = path.dirname(pdfPath);
+    const newPdfPath = path.join(outputDir, serialNoField + '_updated.pdf');
+    await fs.promises.writeFile(newPdfPath, mergedPdfBytes);
 }
+
 
 
 // Handle CLI argument
@@ -121,5 +164,5 @@ if (pdfPath && action === 'clearPDF') {
     clearPDF(pdfPath, options).catch(console.error);
 }
 else if (pdfPath && templatePath && action === 'mergePDF') {
-    mergePDF(pdfPath).catch(console.error);
+    mergePDF(pdfPath, templatePath).catch(console.error);
 }
