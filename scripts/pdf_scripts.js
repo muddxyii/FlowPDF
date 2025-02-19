@@ -12,9 +12,18 @@ function getInfoFieldNames() {
         // Installation Info
         ['InstallationIs', 'ProtectionType', 'ServiceType'] +
         // Device Info 1
-        ['SerialNo', 'WaterMeterNo', 'Size', 'ModelNo', 'SOVComment', 'ReportComments'] +
+        ['SerialNo', 'WaterMeterNo', 'Size', 'ModelNo', 'SOVComment'] +
         // Device Info 2
         ['BFType', 'Manufacturer', 'SOVList'];
+}
+
+function getInitialFieldNames() {
+    return ['DateFailed', 'InitialTester', 'InitialTesterNo', 'InitialTestKitSerial'] +
+        ['LinePressure', 'InitialCT1', 'InitialCT2',
+            'InitialPSIRV', 'InitialAirInlet', 'InitialCk1PVB'] +
+        ['InitialCTBox', 'InitialCT1Leaked', 'InitialCT2Box', 'InitialCT2Leaked',
+            'InitialRVDidNotOpen', 'InitialAirInletLeaked', 'InitialCkPVBLDidNotOpen',
+            'InitialCkPVBLeaked'];
 }
 
 function getRepairsFieldNames() {
@@ -29,6 +38,12 @@ function getRepairsFieldNames() {
         // Vacuum Breaker
         ['PVBCleaned', 'PVBRubberKit', 'PVBDiscHolder',
             'PVBSpring', 'PVBGuide', 'PVBSeat', 'PVBOther'];
+}
+
+function getFinalFieldNames() {
+    return ['DatePassed', 'FinalTester', 'FinalTesterNo', 'FinalTestKitSerial'] +
+        ['LinePressure', 'FinalCT1', 'FinalCT2', 'FinalRV', 'FinalAirInlet', 'Check Valve'] +
+        ['FinalCT1Box', 'FinalCT2Box', 'BackPressure']
 }
 
 function parseOptions(optionsString) {
@@ -46,14 +61,25 @@ async function clearPDF(pdfPath, options) {
 
     const form = pdfDoc.getForm();
     const infoFieldsNames = getInfoFieldNames();
+    const initialFieldsNames = getInitialFieldNames();
     const repairsFieldsNames = getRepairsFieldNames();
+    const finalFieldsNames = getFinalFieldNames();
 
     const fields = form.getFields();
     fields.forEach(field => {
         if (options.KeepInfo && infoFieldsNames.includes(field.getName())) {
             return;
         }
+        if (options.KeepComments && field.getName() === 'ReportComments') {
+            return
+        }
+        if (options.KeepInitialTestData && initialFieldsNames.includes(field.getName())) {
+            return;
+        }
         if (options.KeepRepairData && repairsFieldsNames.includes(field.getName())) {
+            return;
+        }
+        if (options.KeepFinalTestData && finalFieldsNames.includes(field.getName())) {
             return;
         }
 

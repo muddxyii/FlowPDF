@@ -52,6 +52,7 @@ func ClearPdfContentPage(win fyne.Window) fyne.CanvasObject {
 		} else {
 			options = scripts.ScriptOptions{
 				KeepInfo:            false,
+				KeepComments:        false,
 				KeepInitialTestData: false,
 				KeepRepairData:      false,
 				KeepFinalTestData:   false,
@@ -59,6 +60,10 @@ func ClearPdfContentPage(win fyne.Window) fyne.CanvasObject {
 			subCheckboxContainer.Objects = nil
 			subCheckboxContainer.Refresh()
 		}
+	})
+
+	keepCommentsCheck := widget.NewCheck("Keep Comments", func(checked bool) {
+		options.KeepComments = checked
 	})
 
 	clearButton := widget.NewButton("Clear Forms", func() {
@@ -98,7 +103,7 @@ func ClearPdfContentPage(win fyne.Window) fyne.CanvasObject {
 		title,
 		widget.NewSeparator(),
 		pdfSelector,
-		container.NewHBox(keepInfoCheck, keepTestDataCheck),
+		container.NewHBox(keepInfoCheck, keepTestDataCheck, keepCommentsCheck),
 		subCheckboxContainer,
 		clearButton,
 	)

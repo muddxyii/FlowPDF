@@ -17,6 +17,7 @@ const (
 
 type ScriptOptions struct {
 	KeepInfo            bool
+	KeepComments        bool
 	KeepInitialTestData bool
 	KeepRepairData      bool
 	KeepFinalTestData   bool
