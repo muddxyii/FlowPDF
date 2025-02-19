@@ -19,16 +19,8 @@ func UpdateTemplateContentPage() fyne.CanvasObject {
 		// Placeholder action on dropdown selection
 	})
 
-	keepTestDataCheck := widget.NewCheck("Keep Test Data", func(checked bool) {
-		if checked {
-			// TODO: Handle logic for keeping test data
-		} else {
-			// TODO: Handle logic for not keeping test data
-		}
-	})
-
 	updateButton := widget.NewButton("Update PDF", func() {
-		// TODO: Implement clear PDF logic
+		// TODO: Implement merge PDF logic
 	})
 
 	return container.NewVBox(
@@ -39,7 +31,6 @@ func UpdateTemplateContentPage() fyne.CanvasObject {
 			dropdownLabel,
 			container.NewPadded(dropdown),
 		),
-		container.NewPadded(keepTestDataCheck),
 		updateButton,
 	)
 }
