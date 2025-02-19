@@ -1,8 +1,29 @@
 {
   "dependencies": {
-    "pdf-lib": "^1.17.1"
+    "pdf-lib": "^1.17.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
   },
   "devDependencies": {
     "@types/node": "^22.13.4"
-  }
+  },
+  "name": "flowpdf",
+  "version": "1.0.0",
+  "description": "**FlowPDF** is an application built using the **Fyne** framework in **Go**. It is specifically designed to help manage AnyBackflow's specific form PDFs efficiently. The application focuses on simplifying the handling, organization, and filling of these forms, ensuring a streamlined user experience.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muddxyii/FlowPDF.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/muddxyii/FlowPDF/issues"
+  },
+  "homepage": "https://github.com/muddxyii/FlowPDF#readme"
 }
