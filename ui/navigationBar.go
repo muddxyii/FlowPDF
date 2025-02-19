@@ -19,11 +19,11 @@ func BuildNavBar(switchPage func(newContent fyne.CanvasObject), win fyne.Window)
 	})
 	// Update Format Button
 	updateFormatButton := widget.NewButtonWithIcon("Update Template", theme.DocumentIcon(), func() {
-		switchPage(UpdateTemplateContentPage())
+		switchPage(UpdateTemplateContentPage(win))
 	})
 	// Edit Dropdown Button
-	editDropdownButton := widget.NewButtonWithIcon("Edit Testers", theme.MoreVerticalIcon(), func() {
-		switchPage(widget.NewLabel("Edit Dropdowns Page - Content goes here!"))
+	editDropdownButton := widget.NewButtonWithIcon("Edit Test IDs", theme.MoreVerticalIcon(), func() {
+		switchPage(widget.NewLabel("Feature coming soon!"))
 	})
 	// Expand Button
 	labelsHidden := false

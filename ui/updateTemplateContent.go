@@ -1,16 +1,22 @@
 package ui
 
 import (
+	"FlowPDF/scripts"
+	"FlowPDF/ui/components"
+	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
+	"github.com/pkg/browser"
 )
 
-func UpdateTemplateContentPage() fyne.CanvasObject {
+func UpdateTemplateContentPage(win fyne.Window) fyne.CanvasObject {
 	title := widget.NewLabelWithStyle("FlowPDF - Update your PDF Template", fyne.TextAlignCenter, fyne.TextStyle{Bold: true})
+	var pdfURI string
 
-	attachButton := widget.NewButton("Attach Old PDF Form", func() {
-		// TODO: Implement attach PDF form logic
+	pdfSelector := components.CreatePDFSelector(win, func(fileURI string) {
+		pdfURI = fileURI
 	})
 
 	dropdownLabel := widget.NewLabelWithStyle("Select a Template:", fyne.TextAlignLeading, fyne.TextStyle{Italic: true})
@@ -20,13 +26,42 @@ func UpdateTemplateContentPage() fyne.CanvasObject {
 	})
 
 	updateButton := widget.NewButton("Update PDF", func() {
-		// TODO: Implement merge PDF logic
+		if !scripts.IsNodeInstalled() {
+			dialog.NewConfirm(
+				"Node.js Required",
+				"Node.js is not installed. Please install Node.js to use this feature.\n"+
+					"Would you like to visit the download page?",
+				func(confirmed bool) {
+					if confirmed {
+						err := browser.OpenURL("https://nodejs.org/")
+						if err != nil {
+							panic(err)
+						}
+					}
+				},
+				win,
+			).Show()
+			return
+		}
+
+		if pdfURI == "" {
+			dialog.ShowError(fmt.Errorf("please select a PDF file"), win)
+			return
+		}
+
+		err := scripts.RunScript(scripts.PdfMerge, nil, pdfURI, nil)
+		if err != nil {
+			dialog.ShowError(fmt.Errorf("failed to update PDF: %v", err), win)
+			return
+		}
+
+		dialog.ShowInformation("Success", "PDF updated successfully!", win)
 	})
 
 	return container.NewVBox(
 		title,
 		widget.NewSeparator(),
-		attachButton,
+		pdfSelector,
 		container.NewVBox(
 			dropdownLabel,
 			container.NewPadded(dropdown),
