@@ -19,6 +19,48 @@ func ClearPdfContentPage(win fyne.Window) fyne.CanvasObject {
 		pdfURI = fileURI
 	})
 
+	var options scripts.ScriptOptions
+
+	keepInfoCheck := widget.NewCheck("Keep Information", func(checked bool) {
+		options.KeepInfo = checked
+	})
+
+	subCheckboxContainer := container.NewHBox()
+	keepTestDataCheck := widget.NewCheck("Keep Test Data", func(checked bool) {
+		if checked {
+			initialTestDataCheck := widget.NewCheck("Initial Test Data", func(checked bool) {
+				options.KeepInitialTestData = checked
+			})
+			initialTestDataCheck.SetChecked(true)
+
+			repairDataCheck := widget.NewCheck("Repair Data", func(checked bool) {
+				options.KeepRepairData = checked
+			})
+			repairDataCheck.SetChecked(false)
+
+			finalTestDataCheck := widget.NewCheck("Final Test Data", func(checked bool) {
+				options.KeepFinalTestData = checked
+			})
+			finalTestDataCheck.SetChecked(false)
+
+			subCheckboxContainer.Objects = []fyne.CanvasObject{
+				initialTestDataCheck,
+				repairDataCheck,
+				finalTestDataCheck,
+			}
+			subCheckboxContainer.Refresh()
+		} else {
+			options = scripts.ScriptOptions{
+				KeepInfo:            false,
+				KeepInitialTestData: false,
+				KeepRepairData:      false,
+				KeepFinalTestData:   false,
+			}
+			subCheckboxContainer.Objects = nil
+			subCheckboxContainer.Refresh()
+		}
+	})
+
 	clearButton := widget.NewButton("Clear Forms", func() {
 		if !scripts.IsNodeInstalled() {
 			dialog.NewConfirm(
@@ -36,7 +78,6 @@ func ClearPdfContentPage(win fyne.Window) fyne.CanvasObject {
 				win,
 			).Show()
 			return
-
 		}
 
 		if pdfURI == "" {
@@ -44,7 +85,7 @@ func ClearPdfContentPage(win fyne.Window) fyne.CanvasObject {
 			return
 		}
 
-		err := scripts.RunScript(scripts.PdfClear, pdfURI, nil)
+		err := scripts.RunScript(scripts.PdfClear, &options, pdfURI, nil)
 		if err != nil {
 			dialog.ShowError(fmt.Errorf("failed to clear forms: %v", err), win)
 			return
@@ -57,6 +98,8 @@ func ClearPdfContentPage(win fyne.Window) fyne.CanvasObject {
 		title,
 		widget.NewSeparator(),
 		pdfSelector,
+		container.NewHBox(keepInfoCheck, keepTestDataCheck),
+		subCheckboxContainer,
 		clearButton,
 	)
 }

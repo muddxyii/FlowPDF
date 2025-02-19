@@ -14,6 +14,13 @@ const (
 	PdfMerge
 )
 
+type ScriptOptions struct {
+	KeepInfo            bool
+	KeepInitialTestData bool
+	KeepRepairData      bool
+	KeepFinalTestData   bool
+}
+
 func IsNodeInstalled() bool {
 	cmd := exec.Command("node", "--version")
 	var out bytes.Buffer
@@ -25,7 +32,7 @@ func IsNodeInstalled() bool {
 // RunScript executes a Node.js script for PDF operations such as clearing or merging PDFs based on the specified script type.
 // The function takes a ScriptType, the URI of the PDF file, and an optional pointer to a PDF template string.
 // It returns an error if the script type is invalid or if the command execution fails.
-func RunScript(scriptType ScriptType, pdfURI string, pdfTemplate *string) error {
+func RunScript(scriptType ScriptType, options *ScriptOptions, pdfURI string, pdfTemplate *string) error {
 	action := ""
 	switch scriptType {
 	case PdfClear:
