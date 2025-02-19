@@ -17,13 +17,19 @@ func MainContentPage() fyne.CanvasObject {
 	)
 	clearPdfInfo := widget.NewLabelWithStyle(
 		"• Clear PDF: \n"+
-			"    - Removes all form entries in the currently loaded PDF.",
+			"    - Allows you to choose what information gets cleared from the loaded PDF. You can keep certain data based on the checkboxes you select.",
 		fyne.TextAlignLeading,
 		fyne.TextStyle{},
 	)
 	updateTemplateInfo := widget.NewLabelWithStyle(
 		"• Update Template: \n"+
 			"    - Converts old PDF formats to a newer version with updated dropdowns and reduced file size.",
+		fyne.TextAlignLeading,
+		fyne.TextStyle{},
+	)
+	editTestInfo := widget.NewLabelWithStyle(
+		"• Update Test IDs: \n"+
+			"    - (Coming Soon) This feature will allow you to modify tester information, including the tester name, certification number, and gauge kit.",
 		fyne.TextAlignLeading,
 		fyne.TextStyle{},
 	)
@@ -43,6 +49,7 @@ func MainContentPage() fyne.CanvasObject {
 		infoLabel,
 		clearPdfInfo,
 		updateTemplateInfo,
+		editTestInfo,
 		widget.NewSeparator(),
 		instructionLabel,
 		step1,
