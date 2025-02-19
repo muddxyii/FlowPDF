@@ -9,31 +9,43 @@ import (
 func MainContentPage() fyne.CanvasObject {
 	title := widget.NewLabelWithStyle("FlowPDF - Manage Your PDF Forms", fyne.TextAlignCenter, fyne.TextStyle{Bold: true})
 
-	attachButton := widget.NewButton("Attach PDF Form", func() {
-		// TODO: Implement attach PDF form logic
-	})
+	// Info section
+	infoLabel := widget.NewLabelWithStyle(
+		"Features:",
+		fyne.TextAlignLeading,
+		fyne.TextStyle{Bold: true},
+	)
+	clearPdfInfo := widget.NewLabelWithStyle(
+		"• Clear PDF: \n"+
+			"    - Removes all form entries in the currently loaded PDF.",
+		fyne.TextAlignLeading,
+		fyne.TextStyle{},
+	)
+	updateTemplateInfo := widget.NewLabelWithStyle(
+		"• Update Template: \n"+
+			"    - Converts old PDF formats to a newer version with updated dropdowns and reduced file size.",
+		fyne.TextAlignLeading,
+		fyne.TextStyle{},
+	)
 
-	dropdownLabel := widget.NewLabelWithStyle("Edit Dropdowns:", fyne.TextAlignLeading, fyne.TextStyle{Italic: true})
-	dropdownOptions := []string{"Option 1", "Option 2", "Option 3"}
-	dropdown := widget.NewSelect(dropdownOptions, func(selected string) {
-		// Placeholder action on dropdown selection
-	})
-
-	textInputLabel := widget.NewLabelWithStyle("Enter Text Input:", fyne.TextAlignLeading, fyne.TextStyle{})
-	textInput := widget.NewEntry()
-	textInput.SetPlaceHolder("Type here...")
+	// Instruction section
+	instructionLabel := widget.NewLabelWithStyle(
+		"Follow these steps to get started:",
+		fyne.TextAlignLeading,
+		fyne.TextStyle{Bold: true},
+	)
+	step1 := widget.NewLabel("1. Select the feature you want to use from the navigation bar.")
+	step2 := widget.NewLabel("2. Attach the PDF form you want to use and then follow the on-screen instructions.")
 
 	return container.NewVBox(
 		title,
 		widget.NewSeparator(),
-		attachButton,
-		container.NewVBox(
-			dropdownLabel,
-			container.NewPadded(dropdown),
-		),
-		container.NewVBox(
-			textInputLabel,
-			container.NewPadded(textInput),
-		),
+		infoLabel,
+		clearPdfInfo,
+		updateTemplateInfo,
+		widget.NewSeparator(),
+		instructionLabel,
+		step1,
+		step2,
 	)
 }
